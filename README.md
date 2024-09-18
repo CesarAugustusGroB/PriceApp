@@ -7,7 +7,7 @@ Este proyecto es una aplicación para la gestión de precios. Utiliza **Spring B
 El proyecto sigue una arquitectura hexagonal, donde la lógica de negocio está desacoplada de los adaptadores de entrada (como controladores HTTP) y adaptadores de salida (como repositorios JPA).
 
 ### Características:
-- CR de precios.
+- CRUD de precios.
 - Validación de datos a través de anotaciones.
 - Base de datos en memoria H2.
 - Cobertura de pruebas unitarias e integradas.
@@ -45,8 +45,7 @@ src
 
 ### Clonar el Repositorio
 ```bash
-git clone https://github.com/CesarAugustusGroB/PriceApp.git
-cd price-application 
+git clone https://github.com/CesarAugustusGroB/PriceApp.git 
 ```
 
 ### Swagger
