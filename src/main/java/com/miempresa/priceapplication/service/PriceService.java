@@ -85,4 +85,8 @@ public class PriceService {
             throw new InvalidPriceRequestException("Error saving the price. Please verify the data.");
         }
     }
+
+    public void deletePrice(Long id) {
+        //TODO: service para el borrado con su errores.
+    }
 }
