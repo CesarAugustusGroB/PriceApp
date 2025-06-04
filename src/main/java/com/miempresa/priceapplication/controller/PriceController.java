@@ -18,6 +18,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
+
 import java.util.List;
 
 @RestController
@@ -59,7 +61,7 @@ public class PriceController {
     public ResponseEntity<List<Price>> getPrices(
             @RequestParam @Min(1) Integer productId,
             @RequestParam @Min(1) Integer brandId,
-            @RequestParam @NotNull @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) String date) {
+            @RequestParam @NotNull @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime date) {
         return ResponseEntity.ok(priceService.getApplicablePrices(productId, brandId, date));
     }
 }

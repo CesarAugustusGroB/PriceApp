@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,17 +28,9 @@ public class PriceService {
      * @param date La fecha en formato LocalDateTime.
      * @return Una lista de precios aplicables.
      */
-    public List<Price> getApplicablePrices(Integer productId, Integer brandId, String date) {
+    public List<Price> getApplicablePrices(Integer productId, Integer brandId, LocalDateTime date) {
         log.info("Consultando precios para ProductID: {}, BrandID: {}, Fecha: {}", productId, brandId, date);
-        LocalDateTime dateTime;
-
-        try {
-            dateTime = LocalDateTime.parse(date);
-            log.debug("Fecha parseada correctamente: {}", dateTime);
-        } catch (DateTimeParseException e) {
-            log.error("Error en el formato de la fecha: {}", date, e);
-            throw new InvalidPriceRequestException("Formato de fecha inválido. Por favor, usa el formato ISO 8601: YYYY-MM-DDTHH:MM:SS");
-        }
+        LocalDateTime dateTime = date;
 
         List<Price> prices = priceRepository.findApplicablePrices(productId, brandId, dateTime);
 
