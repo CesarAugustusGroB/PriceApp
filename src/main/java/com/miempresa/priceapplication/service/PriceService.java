@@ -2,6 +2,7 @@ package com.miempresa.priceapplication.service;
 
 import com.miempresa.priceapplication.exception.InvalidPriceRequestException;
 import com.miempresa.priceapplication.exception.PriceNotFoundException;
+import com.miempresa.priceapplication.exception.PriceServiceException;
 import com.miempresa.priceapplication.model.Price;
 import com.miempresa.priceapplication.repository.PriceRepository;
 import lombok.RequiredArgsConstructor;
@@ -66,6 +67,14 @@ public class PriceService {
         if (existingPrice.isPresent()) {
             log.error("Price already exists for this product, brand, and date: {}", existingPrice.get());
             throw new InvalidPriceRequestException("The price for this product, brand, and date already exists.");
+        }
+
+        List<Price> overlaps = priceRepository.findOverlappingPrices(
+                price.getProductId(), price.getBrandId(), price.getStartDate(), price.getEndDate());
+
+        if (!overlaps.isEmpty()) {
+            log.error("Overlapping prices found: {}", overlaps);
+            throw new InvalidPriceRequestException("The new price overlaps with an existing price range.");
         }
 
         log.debug("Saving new price...");

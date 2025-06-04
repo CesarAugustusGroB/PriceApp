@@ -141,6 +141,21 @@ public class PriceControllerIT {
     }
 
     @Test
+    public void whenOverlappingPrice_thenStatus400() throws Exception {
+        Price overlapping = new Price(null, 1,
+                LocalDateTime.of(2020, 6, 15, 10, 0),
+                LocalDateTime.of(2020, 6, 20, 23, 59),
+                5, 35455, 0, 45.0, "EUR");
+
+        mockMvc.perform(post("/api/prices")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(overlapping)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.error").value("Invalid Request"))
+                .andExpect(jsonPath("$.message").value("The new price overlaps with an existing price range."));
+    }
+
+    @Test
     public void whenDeletePrice_thenStatus204() throws Exception {
         Price price = new Price(null, 1, LocalDateTime.now().plusMinutes(2), LocalDateTime.now().plusDays(2), 99, 88888, 0, new BigDecimal("10.0"), "EUR");
         price = priceRepository.save(price);
