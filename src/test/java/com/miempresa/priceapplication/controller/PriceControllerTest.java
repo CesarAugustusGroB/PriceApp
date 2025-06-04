@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.hamcrest.Matchers.hasSize;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -51,6 +52,7 @@ public class PriceControllerTest {
                         .param("brandId", "1")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(1)))
                 .andExpect(jsonPath("$[0].price").value(35.5))
                 .andExpect(jsonPath("$[0].brandId").value(1))
                 .andExpect(jsonPath("$[0].productId").value(35455));
@@ -65,6 +67,7 @@ public class PriceControllerTest {
                         .param("brandId", "1")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(1)))
                 .andExpect(jsonPath("$[0].price").value(25.45))
                 .andExpect(jsonPath("$[0].brandId").value(1))
                 .andExpect(jsonPath("$[0].productId").value(35455));
@@ -79,6 +82,7 @@ public class PriceControllerTest {
                         .param("brandId", "1")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(1)))
                 .andExpect(jsonPath("$[0].price").value(35.50))
                 .andExpect(jsonPath("$[0].brandId").value(1))
                 .andExpect(jsonPath("$[0].productId").value(35455));
@@ -93,6 +97,7 @@ public class PriceControllerTest {
                         .param("brandId", "1")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(1)))
                 .andExpect(jsonPath("$[0].price").value(30.50))
                 .andExpect(jsonPath("$[0].brandId").value(1))
                 .andExpect(jsonPath("$[0].productId").value(35455));
@@ -107,6 +112,7 @@ public class PriceControllerTest {
                         .param("brandId", "1")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(1)))
                 .andExpect(jsonPath("$[0].price").value(38.95))
                 .andExpect(jsonPath("$[0].brandId").value(1))
                 .andExpect(jsonPath("$[0].productId").value(35455));
