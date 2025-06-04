@@ -25,7 +25,7 @@ public class PriceService {
      *
      * @param productId El ID del producto.
      * @param brandId El ID de la marca.
-     * @param date La fecha en formato LocalDateTime.
+     * @param date La fecha como cadena en formato ISO 8601 ("YYYY-MM-DDTHH:MM:SS").
      * @return Una lista de precios aplicables.
      */
     public List<Price> getApplicablePrices(Integer productId, Integer brandId, LocalDateTime date) {
