@@ -2,6 +2,7 @@ package com.miempresa.priceapplication.exception;
 
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -43,6 +44,14 @@ public class GlobalExceptionHandler  {
         Map<String, String> response = new HashMap<>();
         response.put("error", "Invalid Request");
         response.put("message", ex.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<Map<String, String>> handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException ex) {
+        Map<String, String> response = new HashMap<>();
+        response.put("error", "Invalid Request");
+        response.put("message", "Formato de fecha inválido. Por favor, usa el formato ISO 8601: YYYY-MM-DDTHH:MM:SS");
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
