@@ -22,9 +22,20 @@ public interface PriceRepository extends JpaRepository<Price, Long> {
                                      @Param("brandId") Integer brandId,
                                      @Param("date") LocalDateTime date);
 
+
     @Query("SELECT p FROM Price p WHERE p.productId = :productId AND p.brandId = :brandId AND p.startDate = :startDate")
     Optional<Price> findByProductIdAndBrandIdAndStartDate(@Param("productId") Integer productId,
                                                           @Param("brandId") Integer brandId,
                                                           @Param("startDate") LocalDateTime startDate);
+
+    @Query("SELECT p FROM Price p " +
+            "WHERE p.productId = :productId " +
+            "AND p.brandId = :brandId " +
+            "AND p.startDate < :endDate " +
+            "AND p.endDate > :startDate")
+    List<Price> findOverlappingPrices(@Param("productId") Integer productId,
+                                      @Param("brandId") Integer brandId,
+                                      @Param("startDate") LocalDateTime startDate,
+                                      @Param("endDate") LocalDateTime endDate);
 
 }
