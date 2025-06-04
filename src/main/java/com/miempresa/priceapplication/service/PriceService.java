@@ -93,4 +93,36 @@ public class PriceService {
         priceRepository.delete(price);
         log.info("Price deleted successfully: {}", id);
     }
+
+    /**
+     * Actualiza un precio existente.
+     *
+     * @param id    identificador del precio a actualizar
+     * @param price datos nuevos del precio
+     * @return el precio actualizado
+     */
+    public Price updatePrice(Long id, Price price) {
+        log.debug("Attempting to update price with id {}", id);
+
+        Price existingPrice = priceRepository.findById(id)
+                .orElseThrow(() -> new PriceNotFoundException("Price with id " + id + " not found"));
+
+        Optional<Price> duplicate = priceRepository.findByProductIdAndBrandIdAndStartDate(
+                price.getProductId(), price.getBrandId(), price.getStartDate());
+
+        if (duplicate.isPresent() && !duplicate.get().getId().equals(id)) {
+            log.error("Price already exists for this product, brand, and date: {}", duplicate.get());
+            throw new InvalidPriceRequestException("The price for this product, brand, and date already exists.");
+        }
+
+        try {
+            price.setId(id);
+            Price savedPrice = priceRepository.save(price);
+            log.info("Price updated successfully: {}", savedPrice);
+            return savedPrice;
+        } catch (Exception e) {
+            log.error("Error updating the price: {}", e.getMessage(), e);
+            throw new PriceServiceException("Error updating the price. Please verify the data.");
+        }
+    }
 }

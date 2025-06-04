@@ -75,4 +75,18 @@ public class PriceController {
         priceService.deletePrice(id);
         return ResponseEntity.noContent().build();
     }
+
+    @Operation(summary = "Actualizar un precio", description = "Actualiza un precio existente")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Precio actualizado exitosamente",
+                    content = { @Content(mediaType = "application/json", schema = @Schema(implementation = Price.class)) }),
+            @ApiResponse(responseCode = "400", description = "Datos inválidos", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Precio no encontrado", content = @Content)
+    })
+    @PutMapping("/{id}")
+    public ResponseEntity<Price> updatePrice(@PathVariable @Min(1) Long id,
+                                             @Valid @RequestBody Price price) {
+        Price updatedPrice = priceService.updatePrice(id, price);
+        return ResponseEntity.ok(updatedPrice);
+    }
 }
