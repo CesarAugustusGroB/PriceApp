@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -147,6 +148,20 @@ public class PriceControllerIT {
                 .andExpect(status().isNoContent());
 
         assertFalse(priceRepository.findById(price.getId()).isPresent());
+    }
+
+    @Test
+    public void whenUpdatePrice_thenStatus200() throws Exception {
+        Price price = new Price(null, 1, LocalDateTime.now().plusMinutes(5), LocalDateTime.now().plusDays(3), 100, 77777, 0, 10.0, "EUR");
+        price = priceRepository.save(price);
+
+        Price updated = new Price(null, 1, price.getStartDate(), price.getEndDate(), price.getPriceList(), price.getProductId(), 0, 20.0, "EUR");
+
+        mockMvc.perform(put("/api/prices/{id}", price.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(updated)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.price").value(20.0));
     }
 
 

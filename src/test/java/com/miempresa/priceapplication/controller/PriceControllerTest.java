@@ -1,5 +1,6 @@
 package com.miempresa.priceapplication.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.miempresa.priceapplication.model.Price;
 import com.miempresa.priceapplication.repository.PriceRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,6 +15,7 @@ import java.time.LocalDateTime;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.hamcrest.Matchers.hasSize;
@@ -135,6 +137,33 @@ public class PriceControllerTest {
     @Test
     public void testDeleteNonExistingPrice() throws Exception {
         mockMvc.perform(delete("/api/prices/{id}", 999L))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void testUpdateExistingPrice() throws Exception {
+        Price updated = new Price(null, 1, LocalDateTime.of(2020, 6, 14, 0, 0),
+                LocalDateTime.of(2020, 12, 31, 23, 59), 1, 35455, 0, 40.0, "EUR");
+
+        ObjectMapper mapper = new ObjectMapper();
+
+        mockMvc.perform(put("/api/prices/{id}", existingPriceId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(updated)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.price").value(40.0));
+    }
+
+    @Test
+    public void testUpdateNonExistingPrice() throws Exception {
+        Price updated = new Price(null, 1, LocalDateTime.of(2020, 6, 14, 0, 0),
+                LocalDateTime.of(2020, 12, 31, 23, 59), 1, 35455, 0, 40.0, "EUR");
+
+        ObjectMapper mapper = new ObjectMapper();
+
+        mockMvc.perform(put("/api/prices/{id}", 999L)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(updated)))
                 .andExpect(status().isNotFound());
     }
 }
