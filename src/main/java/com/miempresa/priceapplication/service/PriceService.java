@@ -40,7 +40,9 @@ public class PriceService {
         }
 
         log.info("Precios encontrados: {}", prices.size());
-        return prices;
+        // Solo devolver el precio con mayor prioridad (primero de la lista)
+        Price selected = prices.get(0);
+        return List.of(selected);
     }
 
     /**
