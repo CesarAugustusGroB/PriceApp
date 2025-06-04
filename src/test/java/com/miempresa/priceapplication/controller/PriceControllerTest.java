@@ -29,20 +29,24 @@ public class PriceControllerTest {
     @Autowired
     private PriceRepository priceRepository;
 
+    private Long existingPriceId;
+
     // Inicializa datos de prueba antes de cada test
     @BeforeEach
     public void setUp() {
         priceRepository.deleteAll(); // Limpia la base de datos antes de cada test
 
-        Price price1 = new Price(1L, 1, LocalDateTime.of(2020, 6, 14, 0, 0), LocalDateTime.of(2020, 12, 31, 23, 59), 1, 35455, 0, 35.50, "EUR");
-        Price price2 = new Price(2L, 1, LocalDateTime.of(2020, 6, 14, 15, 0), LocalDateTime.of(2020, 6, 14, 18, 30), 2, 35455, 1, 25.45, "EUR");
-        Price price3 = new Price(3L, 1, LocalDateTime.of(2020, 6, 15, 0, 0), LocalDateTime.of(2020, 6, 15, 11, 0), 3, 35455, 1, 30.50, "EUR");
-        Price price4 = new Price(4L, 1, LocalDateTime.of(2020, 6, 15, 16, 0), LocalDateTime.of(2020, 12, 31, 23, 59), 4, 35455, 1, 38.95, "EUR");
+        Price price1 = new Price(null, 1, LocalDateTime.of(2020, 6, 14, 0, 0), LocalDateTime.of(2020, 12, 31, 23, 59), 1, 35455, 0, 35.50, "EUR");
+        Price price2 = new Price(null, 1, LocalDateTime.of(2020, 6, 14, 15, 0), LocalDateTime.of(2020, 6, 14, 18, 30), 2, 35455, 1, 25.45, "EUR");
+        Price price3 = new Price(null, 1, LocalDateTime.of(2020, 6, 15, 0, 0), LocalDateTime.of(2020, 6, 15, 11, 0), 3, 35455, 1, 30.50, "EUR");
+        Price price4 = new Price(null, 1, LocalDateTime.of(2020, 6, 15, 16, 0), LocalDateTime.of(2020, 12, 31, 23, 59), 4, 35455, 1, 38.95, "EUR");
 
-        priceRepository.save(price1);
+        price1 = priceRepository.save(price1);
         priceRepository.save(price2);
         priceRepository.save(price3);
         priceRepository.save(price4);
+
+        existingPriceId = price1.getId();
     }
 
     // Test 1: Petición a las 10:00 del día 14 del producto 35455 para la brand 1 (ZARA)
@@ -122,7 +126,7 @@ public class PriceControllerTest {
 
     @Test
     public void testDeleteExistingPrice() throws Exception {
-        Long idToDelete = 1L;
+        Long idToDelete = existingPriceId;
         mockMvc.perform(delete("/api/prices/{id}", idToDelete))
                 .andExpect(status().isNoContent());
         assertFalse(priceRepository.findById(idToDelete).isPresent());
