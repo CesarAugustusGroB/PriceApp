@@ -10,6 +10,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.math.BigDecimal;
 
 @Data
 @NoArgsConstructor
@@ -44,7 +45,8 @@ public class Price {
 
     @NotNull(message = "El precio no puede ser nulo")
     @DecimalMin(value = "0.0", inclusive = false, message = "El precio debe ser mayor que 0")
-    private Double price;
+    @Digits(integer = 10, fraction = 2, message = "El precio debe tener hasta 10 dígitos enteros y 2 decimales")
+    private BigDecimal price;
 
     @NotBlank(message = "La moneda no puede estar vacía")
     @Size(min = 3, max = 3, message = "La moneda debe tener un código ISO de 3 caracteres")

@@ -12,6 +12,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDateTime;
+import java.math.BigDecimal;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -38,10 +39,10 @@ public class PriceControllerTest {
     public void setUp() {
         priceRepository.deleteAll(); // Limpia la base de datos antes de cada test
 
-        Price price1 = new Price(null, 1, LocalDateTime.of(2020, 6, 14, 0, 0), LocalDateTime.of(2020, 12, 31, 23, 59), 1, 35455, 0, 35.50, "EUR");
-        Price price2 = new Price(null, 1, LocalDateTime.of(2020, 6, 14, 15, 0), LocalDateTime.of(2020, 6, 14, 18, 30), 2, 35455, 1, 25.45, "EUR");
-        Price price3 = new Price(null, 1, LocalDateTime.of(2020, 6, 15, 0, 0), LocalDateTime.of(2020, 6, 15, 11, 0), 3, 35455, 1, 30.50, "EUR");
-        Price price4 = new Price(null, 1, LocalDateTime.of(2020, 6, 15, 16, 0), LocalDateTime.of(2020, 12, 31, 23, 59), 4, 35455, 1, 38.95, "EUR");
+        Price price1 = new Price(null, 1, LocalDateTime.of(2020, 6, 14, 0, 0), LocalDateTime.of(2020, 12, 31, 23, 59), 1, 35455, 0, new BigDecimal("35.50"), "EUR");
+        Price price2 = new Price(null, 1, LocalDateTime.of(2020, 6, 14, 15, 0), LocalDateTime.of(2020, 6, 14, 18, 30), 2, 35455, 1, new BigDecimal("25.45"), "EUR");
+        Price price3 = new Price(null, 1, LocalDateTime.of(2020, 6, 15, 0, 0), LocalDateTime.of(2020, 6, 15, 11, 0), 3, 35455, 1, new BigDecimal("30.50"), "EUR");
+        Price price4 = new Price(null, 1, LocalDateTime.of(2020, 6, 15, 16, 0), LocalDateTime.of(2020, 12, 31, 23, 59), 4, 35455, 1, new BigDecimal("38.95"), "EUR");
 
         price1 = priceRepository.save(price1);
         priceRepository.save(price2);
@@ -143,7 +144,7 @@ public class PriceControllerTest {
     @Test
     public void testUpdateExistingPrice() throws Exception {
         Price updated = new Price(null, 1, LocalDateTime.of(2020, 6, 14, 0, 0),
-                LocalDateTime.of(2020, 12, 31, 23, 59), 1, 35455, 0, 40.0, "EUR");
+                LocalDateTime.of(2020, 12, 31, 23, 59), 1, 35455, 0, new BigDecimal("40.0"), "EUR");
 
         ObjectMapper mapper = new ObjectMapper();
 
@@ -157,7 +158,7 @@ public class PriceControllerTest {
     @Test
     public void testUpdateNonExistingPrice() throws Exception {
         Price updated = new Price(null, 1, LocalDateTime.of(2020, 6, 14, 0, 0),
-                LocalDateTime.of(2020, 12, 31, 23, 59), 1, 35455, 0, 40.0, "EUR");
+                LocalDateTime.of(2020, 12, 31, 23, 59), 1, 35455, 0, new BigDecimal("40.0"), "EUR");
 
         ObjectMapper mapper = new ObjectMapper();
 
