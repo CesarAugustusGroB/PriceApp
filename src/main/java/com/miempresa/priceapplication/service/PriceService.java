@@ -4,8 +4,8 @@ import com.miempresa.priceapplication.exception.InvalidPriceRequestException;
 import com.miempresa.priceapplication.exception.PriceNotFoundException;
 import com.miempresa.priceapplication.model.Price;
 import com.miempresa.priceapplication.repository.PriceRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -14,10 +14,10 @@ import java.util.Optional;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class PriceService {
 
-    @Autowired
-    private PriceRepository priceRepository;
+    private final PriceRepository priceRepository;
 
     /**
      * Obtiene los precios aplicables según el producto, marca y fecha proporcionados.

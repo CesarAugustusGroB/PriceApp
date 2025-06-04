@@ -11,8 +11,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -27,10 +27,10 @@ import java.util.List;
 @Tag(name = "Price API", description = "API para consultar precios por fecha, producto y marca")
 @Validated
 @Slf4j
+@RequiredArgsConstructor
 public class PriceController {
 
-    @Autowired
-    private PriceService priceService;
+    private final PriceService priceService;
 
     @Operation(summary = "Crear un nuevo precio", description = "Crea un precio basado en los detalles proporcionados.")
     @ApiResponses(value = {
