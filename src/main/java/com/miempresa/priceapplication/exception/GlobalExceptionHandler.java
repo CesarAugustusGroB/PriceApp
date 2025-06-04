@@ -44,8 +44,24 @@ public class GlobalExceptionHandler  {
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler(CustomerNotFoundException.class)
+    public ResponseEntity<Map<String, String>> handleCustomerNotFoundException(CustomerNotFoundException ex) {
+        Map<String, String> response = new HashMap<>();
+        response.put("error", "Not Found");
+        response.put("message", ex.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+    }
+
     @ExceptionHandler(InvalidPriceRequestException.class)
     public ResponseEntity<Map<String, String>> handleInvalidPriceRequestException(InvalidPriceRequestException ex) {
+        Map<String, String> response = new HashMap<>();
+        response.put("error", "Invalid Request");
+        response.put("message", ex.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(InvalidCustomerRequestException.class)
+    public ResponseEntity<Map<String, String>> handleInvalidCustomerRequestException(InvalidCustomerRequestException ex) {
         Map<String, String> response = new HashMap<>();
         response.put("error", "Invalid Request");
         response.put("message", ex.getMessage());
@@ -62,6 +78,14 @@ public class GlobalExceptionHandler  {
 
     @ExceptionHandler(PriceServiceException.class)
     public ResponseEntity<Map<String, String>> handlePriceServiceException(PriceServiceException ex) {
+        Map<String, String> response = new HashMap<>();
+        response.put("error", "Service Error");
+        response.put("message", ex.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(CustomerServiceException.class)
+    public ResponseEntity<Map<String, String>> handleCustomerServiceException(CustomerServiceException ex) {
         Map<String, String> response = new HashMap<>();
         response.put("error", "Service Error");
         response.put("message", ex.getMessage());
