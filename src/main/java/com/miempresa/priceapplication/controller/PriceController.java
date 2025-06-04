@@ -64,4 +64,15 @@ public class PriceController {
             @RequestParam @NotNull @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime date) {
         return ResponseEntity.ok(priceService.getApplicablePrices(productId, brandId, date));
     }
+
+    @Operation(summary = "Eliminar un precio", description = "Elimina un precio existente por su ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Precio eliminado exitosamente", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Precio no encontrado", content = @Content)
+    })
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deletePrice(@PathVariable @Min(1) Long id) {
+        priceService.deletePrice(id);
+        return ResponseEntity.noContent().build();
+    }
 }

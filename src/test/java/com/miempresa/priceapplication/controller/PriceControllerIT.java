@@ -2,6 +2,7 @@ package com.miempresa.priceapplication.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.miempresa.priceapplication.model.Price;
+import com.miempresa.priceapplication.repository.PriceRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -13,9 +14,11 @@ import java.time.LocalDateTime;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -26,6 +29,9 @@ public class PriceControllerIT {
 
     @Autowired
     private ObjectMapper objectMapper;
+
+    @Autowired
+    private PriceRepository priceRepository;
 
     @Test
     public void whenGetPrice_thenReturnPrice() throws Exception {
@@ -130,6 +136,17 @@ public class PriceControllerIT {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.error").value("Invalid Request"))
                 .andExpect(jsonPath("$.message").value("The price for this product, brand, and date already exists."));
+    }
+
+    @Test
+    public void whenDeletePrice_thenStatus204() throws Exception {
+        Price price = new Price(null, 1, LocalDateTime.now().plusMinutes(2), LocalDateTime.now().plusDays(2), 99, 88888, 0, 10.0, "EUR");
+        price = priceRepository.save(price);
+
+        mockMvc.perform(delete("/api/prices/{id}", price.getId()))
+                .andExpect(status().isNoContent());
+
+        assertFalse(priceRepository.findById(price.getId()).isPresent());
     }
 
 

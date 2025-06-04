@@ -13,9 +13,11 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.time.LocalDateTime;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.hamcrest.Matchers.hasSize;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -116,5 +118,19 @@ public class PriceControllerTest {
                 .andExpect(jsonPath("$[0].price").value(38.95))
                 .andExpect(jsonPath("$[0].brandId").value(1))
                 .andExpect(jsonPath("$[0].productId").value(35455));
+    }
+
+    @Test
+    public void testDeleteExistingPrice() throws Exception {
+        Long idToDelete = 1L;
+        mockMvc.perform(delete("/api/prices/{id}", idToDelete))
+                .andExpect(status().isNoContent());
+        assertFalse(priceRepository.findById(idToDelete).isPresent());
+    }
+
+    @Test
+    public void testDeleteNonExistingPrice() throws Exception {
+        mockMvc.perform(delete("/api/prices/{id}", 999L))
+                .andExpect(status().isNotFound());
     }
 }

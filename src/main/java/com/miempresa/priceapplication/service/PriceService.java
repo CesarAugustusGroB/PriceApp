@@ -76,4 +76,19 @@ public class PriceService {
             throw new InvalidPriceRequestException("Error saving the price. Please verify the data.");
         }
     }
+
+    /**
+     * Elimina un precio por su identificador.
+     *
+     * @param id identificador del precio a eliminar
+     * @throws PriceNotFoundException si no existe el precio con el id proporcionado
+     */
+    public void deletePrice(Long id) {
+        log.debug("Attempting to delete price with id {}", id);
+        Price price = priceRepository.findById(id)
+                .orElseThrow(() -> new PriceNotFoundException("Price with id " + id + " not found"));
+
+        priceRepository.delete(price);
+        log.info("Price deleted successfully: {}", id);
+    }
 }
