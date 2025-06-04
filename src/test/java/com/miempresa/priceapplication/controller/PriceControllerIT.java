@@ -11,6 +11,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDateTime;
+import java.math.BigDecimal;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -96,7 +97,7 @@ public class PriceControllerIT {
                 2, // priceList (ensure unique)
                 99999, // productId (ensure unique)
                 0, // priority
-                49.99, // price
+                new BigDecimal("49.99"), // price
                 "USD" // currency
         );
 
@@ -112,7 +113,7 @@ public class PriceControllerIT {
     // Error handling for invalid POST request (e.g., missing required fields)
     @Test
     public void whenCreatePriceWithInvalidData_thenBadRequest() throws Exception {
-        Price newPrice = new Price(null, null, null, null, 1, 35455, 0, 39.99, "EUR");
+        Price newPrice = new Price(null, null, null, null, 1, 35455, 0, new BigDecimal("39.99"), "EUR");
 
         mockMvc.perform(post("/api/prices")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -129,7 +130,7 @@ public class PriceControllerIT {
     public void whenDuplicatePrice_thenStatus400() throws Exception {
         Price duplicatePrice = new Price(null, 1, LocalDateTime.of(2020, 6, 14, 0, 0),
                 LocalDateTime.of(2020, 12, 31, 23, 59),
-                1, 35455, 0, 35.5, "EUR");
+                1, 35455, 0, new BigDecimal("35.5"), "EUR");
 
         mockMvc.perform(post("/api/prices")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -141,7 +142,7 @@ public class PriceControllerIT {
 
     @Test
     public void whenDeletePrice_thenStatus204() throws Exception {
-        Price price = new Price(null, 1, LocalDateTime.now().plusMinutes(2), LocalDateTime.now().plusDays(2), 99, 88888, 0, 10.0, "EUR");
+        Price price = new Price(null, 1, LocalDateTime.now().plusMinutes(2), LocalDateTime.now().plusDays(2), 99, 88888, 0, new BigDecimal("10.0"), "EUR");
         price = priceRepository.save(price);
 
         mockMvc.perform(delete("/api/prices/{id}", price.getId()))
@@ -152,10 +153,10 @@ public class PriceControllerIT {
 
     @Test
     public void whenUpdatePrice_thenStatus200() throws Exception {
-        Price price = new Price(null, 1, LocalDateTime.now().plusMinutes(5), LocalDateTime.now().plusDays(3), 100, 77777, 0, 10.0, "EUR");
+        Price price = new Price(null, 1, LocalDateTime.now().plusMinutes(5), LocalDateTime.now().plusDays(3), 100, 77777, 0, new BigDecimal("10.0"), "EUR");
         price = priceRepository.save(price);
 
-        Price updated = new Price(null, 1, price.getStartDate(), price.getEndDate(), price.getPriceList(), price.getProductId(), 0, 20.0, "EUR");
+        Price updated = new Price(null, 1, price.getStartDate(), price.getEndDate(), price.getPriceList(), price.getProductId(), 0, new BigDecimal("20.0"), "EUR");
 
         mockMvc.perform(put("/api/prices/{id}", price.getId())
                         .contentType(MediaType.APPLICATION_JSON)
