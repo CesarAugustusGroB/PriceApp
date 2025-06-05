@@ -1,7 +1,10 @@
 package com.miempresa.priceapplication.controller;
 
 import com.miempresa.priceapplication.model.Price;
-import com.miempresa.priceapplication.service.PriceService;
+import com.miempresa.priceapplication.model.PriceEvent;
+import com.miempresa.priceapplication.service.PriceCommandService;
+import com.miempresa.priceapplication.service.PriceQueryService;
+import com.miempresa.priceapplication.service.PriceEventService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -31,7 +34,9 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PriceController {
 
-    private final PriceService priceService;
+    private final PriceCommandService commandService;
+    private final PriceQueryService queryService;
+    private final PriceEventService eventService;
 
     @Operation(summary = "Crear un nuevo precio", description = "Crea un precio basado en los detalles proporcionados.")
     @ApiResponses(value = {
@@ -42,7 +47,7 @@ public class PriceController {
     @PostMapping
     public Mono<ResponseEntity<Price>> createPrice(@Valid @RequestBody Price price) {
         log.info("Solicitud de creación de precio recibida: {}", price);
-        return Mono.fromCallable(() -> priceService.createPrice(price))
+        return Mono.fromCallable(() -> commandService.createPrice(price))
                 .map(createdPrice -> {
                     log.info("Precio creado exitosamente: {}", createdPrice);
                     return ResponseEntity.status(201).body(createdPrice);
@@ -65,7 +70,7 @@ public class PriceController {
             @RequestParam @Min(1) Integer productId,
             @RequestParam @Min(1) Integer brandId,
             @RequestParam @NotNull @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime date) {
-        return Mono.fromCallable(() -> priceService.getApplicablePrices(productId, brandId, date))
+        return Mono.fromCallable(() -> queryService.getApplicablePrices(productId, brandId, date))
                 .map(ResponseEntity::ok);
     }
 
@@ -76,7 +81,7 @@ public class PriceController {
     })
     @DeleteMapping("/{id}")
     public Mono<ResponseEntity<Void>> deletePrice(@PathVariable @Min(1) Long id) {
-        return Mono.fromRunnable(() -> priceService.deletePrice(id))
+        return Mono.fromRunnable(() -> commandService.deletePrice(id))
                 .then(Mono.just(ResponseEntity.noContent().build()));
     }
 
@@ -90,7 +95,14 @@ public class PriceController {
     @PutMapping("/{id}")
     public Mono<ResponseEntity<Price>> updatePrice(@PathVariable @Min(1) Long id,
                                              @Valid @RequestBody Price price) {
-        return Mono.fromCallable(() -> priceService.updatePrice(id, price))
+        return Mono.fromCallable(() -> commandService.updatePrice(id, price))
+                .map(ResponseEntity::ok);
+    }
+
+    @Operation(summary = "Obtener eventos de un precio", description = "Devuelve el historial de eventos para un precio")
+    @GetMapping("/{id}/events")
+    public Mono<ResponseEntity<List<PriceEvent>>> getPriceEvents(@PathVariable @Min(1) Long id) {
+        return Mono.fromCallable(() -> eventService.getEvents(id))
                 .map(ResponseEntity::ok);
     }
 }
