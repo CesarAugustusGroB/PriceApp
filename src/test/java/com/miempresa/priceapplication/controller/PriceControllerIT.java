@@ -145,7 +145,7 @@ public class PriceControllerIT {
         Price overlapping = new Price(null, 1,
                 LocalDateTime.of(2020, 6, 15, 10, 0),
                 LocalDateTime.of(2020, 6, 20, 23, 59),
-                5, 35455, 0, 45.0, "EUR");
+                5, 35455, 0, new BigDecimal("45.0"), "EUR");
 
         mockMvc.perform(post("/api/prices")
                         .contentType(MediaType.APPLICATION_JSON)
