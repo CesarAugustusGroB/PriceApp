@@ -49,4 +49,9 @@ git clone https://github.com/CesarAugustusGroB/PriceApp.git
 ```
 
 ### Swagger
-Puedes consultar la API en: http://localhost:8080/swagger-ui/index.html
+La documentación interactiva se encuentra disponible una vez arranque la aplicación.
+Abre tu navegador y navega a:
+
+```
+http://localhost:8080/swagger-ui.html
+```
