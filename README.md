@@ -63,3 +63,8 @@ mvn -pl discovery-server spring-boot:run
 mvn -pl config-server spring-boot:run
 ```
 Luego ejecuta los microservicios normalmente. Ellos obtendrán su configuración desde `config-server` y se registrarán en Eureka.
+
+### Observabilidad y Monitoreo
+Para vigilar el estado y el rendimiento de los servicios se pueden usar **Prometheus** y **Grafana**. Con Spring Boot Actuator se exponen métricas que Prometheus recolecta y Grafana visualiza en paneles.
+
+Asimismo, la trazabilidad distribuida se puede habilitar añadiendo **Spring Cloud Sleuth** y **Zipkin**. De esta forma es posible seguir el recorrido de las peticiones entre microservicios y detectar cuellos de botella con rapidez.
