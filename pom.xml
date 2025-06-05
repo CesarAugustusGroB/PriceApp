@@ -10,6 +10,7 @@
     <modules>
         <module>price-service</module>
         <module>customer-service</module>
+        <module>gateway-service</module>
         <module>config-server</module>
         <module>discovery-server</module>
     </modules>

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.miempresa.priceapplication.model.Price;
 import com.miempresa.priceapplication.repository.PriceRepository;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -35,9 +36,21 @@ public class PriceControllerIT {
     @Autowired
     private PriceRepository priceRepository;
 
+    private String authHeader;
+
+    @BeforeEach
+    public void login() throws Exception {
+        String response = mockMvc.perform(post("/auth/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"username\":\"user\",\"password\":\"password\"}"))
+                .andReturn().getResponse().getContentAsString();
+        authHeader = "Bearer " + objectMapper.readTree(response).get("token").asText();
+    }
+
     @Test
     public void whenGetPrice_thenReturnPrice() throws Exception {
         mockMvc.perform(get("/api/prices")
+                        .header(org.springframework.http.HttpHeaders.AUTHORIZATION, authHeader)
                         .param("productId", "35455")
                         .param("brandId", "1")
                         .param("date", "2020-06-14T10:00:00")
@@ -53,6 +66,7 @@ public class PriceControllerIT {
     @Test
     public void whenInvalidDateFormat_thenBadRequest() throws Exception {
         mockMvc.perform(get("/api/prices")
+                        .header(org.springframework.http.HttpHeaders.AUTHORIZATION, authHeader)
                         .param("productId", "35455")
                         .param("brandId", "1")
                         .param("date", "invalid-date-format")
@@ -65,6 +79,7 @@ public class PriceControllerIT {
     @Test
     public void whenPriceNotFound_thenNotFound() throws Exception {
         mockMvc.perform(get("/api/prices")
+                        .header(org.springframework.http.HttpHeaders.AUTHORIZATION, authHeader)
                         .param("productId", "99999") // Un ID de producto que no existe
                         .param("brandId", "1")
                         .param("date", "2020-06-14T10:00:00")
@@ -77,6 +92,7 @@ public class PriceControllerIT {
     @Test
     public void whenInvalidProductIdOrBrandId_thenBadRequest() throws Exception {
         mockMvc.perform(get("/api/prices")
+                        .header(org.springframework.http.HttpHeaders.AUTHORIZATION, authHeader)
                         .param("productId", "-1") // ID de producto inválido
                         .param("brandId", "-1")   // ID de marca inválido
                         .param("date", "2020-06-14T10:00:00")
@@ -102,6 +118,7 @@ public class PriceControllerIT {
         );
 
         mockMvc.perform(post("/api/prices")
+                        .header(org.springframework.http.HttpHeaders.AUTHORIZATION, authHeader)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(newPrice)))
                 .andExpect(status().isCreated()) // Expect HTTP 201 Created
@@ -116,6 +133,7 @@ public class PriceControllerIT {
         Price newPrice = new Price(null, null, null, null, 1, 35455, 0, new BigDecimal("39.99"), "EUR");
 
         mockMvc.perform(post("/api/prices")
+                        .header(org.springframework.http.HttpHeaders.AUTHORIZATION, authHeader)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(newPrice)))
                 .andExpect(status().isBadRequest())
@@ -133,6 +151,7 @@ public class PriceControllerIT {
                 1, 35455, 0, new BigDecimal("35.5"), "EUR");
 
         mockMvc.perform(post("/api/prices")
+                        .header(org.springframework.http.HttpHeaders.AUTHORIZATION, authHeader)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(duplicatePrice)))
                 .andExpect(status().isBadRequest())
@@ -148,6 +167,7 @@ public class PriceControllerIT {
                 5, 35455, 0, new BigDecimal("45.0"), "EUR");
 
         mockMvc.perform(post("/api/prices")
+                        .header(org.springframework.http.HttpHeaders.AUTHORIZATION, authHeader)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(overlapping)))
                 .andExpect(status().isBadRequest())
@@ -160,7 +180,8 @@ public class PriceControllerIT {
         Price price = new Price(null, 1, LocalDateTime.now().plusMinutes(2), LocalDateTime.now().plusDays(2), 99, 88888, 0, new BigDecimal("10.0"), "EUR");
         price = priceRepository.save(price);
 
-        mockMvc.perform(delete("/api/prices/{id}", price.getId()))
+        mockMvc.perform(delete("/api/prices/{id}", price.getId())
+                        .header(org.springframework.http.HttpHeaders.AUTHORIZATION, authHeader))
                 .andExpect(status().isNoContent());
 
         assertFalse(priceRepository.findById(price.getId()).isPresent());
@@ -174,6 +195,7 @@ public class PriceControllerIT {
         Price updated = new Price(null, 1, price.getStartDate(), price.getEndDate(), price.getPriceList(), price.getProductId(), 0, new BigDecimal("20.0"), "EUR");
 
         mockMvc.perform(put("/api/prices/{id}", price.getId())
+                        .header(org.springframework.http.HttpHeaders.AUTHORIZATION, authHeader)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(updated)))
                 .andExpect(status().isOk())
