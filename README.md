@@ -16,6 +16,7 @@ Se dividen dos microservicios: **price-service** y **customer-service**. Ambos m
 ## Tecnologías Utilizadas
 - **Java 17**
 - **Spring Boot 3.x**
+- **Spring WebFlux** para manejo reactivo de peticiones
 - **H2 Database**
 - **JPA (Java Persistence API)**
 - **Jakarta Validation**

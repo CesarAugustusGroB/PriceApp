@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
+import reactor.core.publisher.Mono;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -39,11 +40,13 @@ public class PriceController {
             @ApiResponse(responseCode = "500", description = "Error interno del servidor", content = @Content)
     })
     @PostMapping
-    public ResponseEntity<Price> createPrice(@Valid @RequestBody Price price) {
+    public Mono<ResponseEntity<Price>> createPrice(@Valid @RequestBody Price price) {
         log.info("Solicitud de creación de precio recibida: {}", price);
-        Price createdPrice = priceService.createPrice(price);
-        log.info("Precio creado exitosamente: {}", createdPrice);
-        return ResponseEntity.status(201).body(createdPrice); // Retorna 201 Created
+        return Mono.fromCallable(() -> priceService.createPrice(price))
+                .map(createdPrice -> {
+                    log.info("Precio creado exitosamente: {}", createdPrice);
+                    return ResponseEntity.status(201).body(createdPrice);
+                });
     }
 
     @Operation(summary = "Obtener precios aplicables", description = "Devuelve el precio aplicable basado en producto, marca y fecha")
@@ -58,11 +61,12 @@ public class PriceController {
                     content = @Content)
     })
     @GetMapping
-    public ResponseEntity<List<Price>> getPrices(
+    public Mono<ResponseEntity<List<Price>>> getPrices(
             @RequestParam @Min(1) Integer productId,
             @RequestParam @Min(1) Integer brandId,
             @RequestParam @NotNull @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime date) {
-        return ResponseEntity.ok(priceService.getApplicablePrices(productId, brandId, date));
+        return Mono.fromCallable(() -> priceService.getApplicablePrices(productId, brandId, date))
+                .map(ResponseEntity::ok);
     }
 
     @Operation(summary = "Eliminar un precio", description = "Elimina un precio existente por su ID")
@@ -71,9 +75,9 @@ public class PriceController {
             @ApiResponse(responseCode = "404", description = "Precio no encontrado", content = @Content)
     })
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletePrice(@PathVariable @Min(1) Long id) {
-        priceService.deletePrice(id);
-        return ResponseEntity.noContent().build();
+    public Mono<ResponseEntity<Void>> deletePrice(@PathVariable @Min(1) Long id) {
+        return Mono.fromRunnable(() -> priceService.deletePrice(id))
+                .then(Mono.just(ResponseEntity.noContent().build()));
     }
 
     @Operation(summary = "Actualizar un precio", description = "Actualiza un precio existente")
@@ -84,9 +88,9 @@ public class PriceController {
             @ApiResponse(responseCode = "404", description = "Precio no encontrado", content = @Content)
     })
     @PutMapping("/{id}")
-    public ResponseEntity<Price> updatePrice(@PathVariable @Min(1) Long id,
+    public Mono<ResponseEntity<Price>> updatePrice(@PathVariable @Min(1) Long id,
                                              @Valid @RequestBody Price price) {
-        Price updatedPrice = priceService.updatePrice(id, price);
-        return ResponseEntity.ok(updatedPrice);
+        return Mono.fromCallable(() -> priceService.updatePrice(id, price))
+                .map(ResponseEntity::ok);
     }
 }
