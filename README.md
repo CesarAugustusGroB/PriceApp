@@ -11,6 +11,7 @@ Se dividen dos microservicios: **price-service** y **customer-service**. Ambos m
 - Validación de datos a través de anotaciones.
 - Base de datos en memoria H2.
 - Cobertura de pruebas unitarias e integradas.
+- Comunicación asíncrona mediante RabbitMQ.
 
 ## Tecnologías Utilizadas
 - **Java 17**
@@ -19,6 +20,7 @@ Se dividen dos microservicios: **price-service** y **customer-service**. Ambos m
 - **JPA (Java Persistence API)**
 - **Jakarta Validation**
 - **JUnit 5** y **Spring MockMvc** para pruebas
+- **RabbitMQ** para mensajería asíncrona
 
 ## Instalación y Ejecución
 
@@ -44,3 +46,9 @@ Abre tu navegador y navega a:
 ```
 http://localhost:8080/swagger-ui.html
 ```
+
+### Mensajería Asíncrona
+Se integró RabbitMQ como sistema de colas para propagar eventos de forma desacoplada.
+Los servicios publican mensajes en `price.events` y `customer.events` cuando se
+crean o actualizan registros, permitiendo que otros sistemas reaccionen sin
+bloquear la operación principal.

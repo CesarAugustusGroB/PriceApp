@@ -5,6 +5,7 @@ import com.miempresa.priceapplication.exception.PriceNotFoundException;
 import com.miempresa.priceapplication.exception.PriceServiceException;
 import com.miempresa.priceapplication.model.Price;
 import com.miempresa.priceapplication.repository.PriceRepository;
+import com.miempresa.priceapplication.messaging.PriceEventPublisher;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,7 @@ import java.util.Optional;
 public class PriceService {
 
     private final PriceRepository priceRepository;
+    private final PriceEventPublisher eventPublisher;
 
     /**
      * Obtiene los precios aplicables según el producto, marca y fecha proporcionados.
@@ -81,6 +83,7 @@ public class PriceService {
         try {
             Price savedPrice = priceRepository.save(price);
             log.info("Price saved successfully: {}", savedPrice);
+            eventPublisher.publishPriceUpdated(savedPrice.getId());
             return savedPrice;
         } catch (Exception e) {
             log.error("Error saving the price: {}", e.getMessage(), e);
@@ -101,6 +104,7 @@ public class PriceService {
 
         priceRepository.delete(price);
         log.info("Price deleted successfully: {}", id);
+        eventPublisher.publishPriceUpdated(id);
     }
 
     /**
@@ -128,6 +132,7 @@ public class PriceService {
             price.setId(id);
             Price savedPrice = priceRepository.save(price);
             log.info("Price updated successfully: {}", savedPrice);
+            eventPublisher.publishPriceUpdated(savedPrice.getId());
             return savedPrice;
         } catch (Exception e) {
             log.error("Error updating the price: {}", e.getMessage(), e);
