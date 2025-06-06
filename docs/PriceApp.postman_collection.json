@@ -1,0 +1,66 @@
+{
+  "info": {
+    "_postman_id": "12345678-abcd-efgh-ijkl-123456789012",
+    "name": "PriceApp Example",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Colección de ejemplo para probar la API de PriceApp"
+  },
+  "item": [
+    {
+      "name": "Login",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/auth/login",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "auth",
+            "login"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"username\": \"admin\",\n  \"password\": \"admin\"\n}"
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Consultar precios",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/api/prices?productId=35455&brandId=1&date=2020-06-16T21:00:00",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "prices"
+          ],
+          "query": [
+            {"key": "productId", "value": "35455"},
+            {"key": "brandId", "value": "1"},
+            {"key": "date", "value": "2020-06-16T21:00:00"}
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080"
+    }
+  ]
+}
