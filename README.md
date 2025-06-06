@@ -68,3 +68,20 @@ Luego ejecuta los microservicios normalmente. Ellos obtendrán su configuración
 Para vigilar el estado y el rendimiento de los servicios se pueden usar **Prometheus** y **Grafana**. Con Spring Boot Actuator se exponen métricas que Prometheus recolecta y Grafana visualiza en paneles.
 
 Asimismo, la trazabilidad distribuida se puede habilitar añadiendo **Spring Cloud Sleuth** y **Zipkin**. De esta forma es posible seguir el recorrido de las peticiones entre microservicios y detectar cuellos de botella con rapidez.
+
+### Despliegue en Contenedores y Kubernetes
+Cada microservicio incluye un `Dockerfile` para generar su imagen. Tras compilar el proyecto con Maven se pueden construir las imágenes:
+
+```bash
+mvn clean package -DskipTests
+# Ejemplo para price-service
+docker build -t myrepo/price-service:latest price-service
+```
+
+Los manifiestos de Kubernetes se encuentran en la carpeta [`k8s`](k8s/). Una vez publicadas las imágenes en su registro ejecute:
+
+```bash
+kubectl apply -f k8s/
+```
+
+Esto desplegará los servicios y expondrá el `gateway-service` como punto de entrada.
