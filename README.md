@@ -85,3 +85,6 @@ kubectl apply -f k8s/
 ```
 
 Esto desplegará los servicios y expondrá el `gateway-service` como punto de entrada.
+
+### Integración Serverless (AWS Lambda)
+Para tareas puntuales, como notificaciones, auditorías o trabajos programados, puedes usar funciones Lambda. En la carpeta [`lambda`](lambda/) se incluye un ejemplo sencillo que puede desplegarse con la AWS CLI o mediante el framework Serverless.
