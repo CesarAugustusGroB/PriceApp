@@ -42,13 +42,21 @@ discovery-server/     # Servidor Eureka para descubrir servicios
 git clone https://github.com/CesarAugustusGroB/PriceApp.git 
 ```
 
-### Swagger
-La documentación interactiva se encuentra disponible una vez arranque la aplicación.
-Abre tu navegador y navega a:
+### Documentación Interactiva
+La documentación de cada microservicio se genera automáticamente con **Swagger UI**. Una vez el servicio esté en ejecución abre tu navegador en:
 
 ```
 http://localhost:8080/swagger-ui.html
 ```
+
+Desde esa pantalla puedes ejecutar cada endpoint y explorar sus parámetros.
+Si prefieres usar **Postman** puedes importar la especificación de la API con estos pasos:
+
+1. Abre Postman y selecciona **Import**.
+2. Elige **Link** e introduce `http://localhost:8080/api-docs`.
+3. Postman creará una colección con todas las rutas disponibles.
+
+Adicionalmente en [`docs/PriceApp.postman_collection.json`](docs/PriceApp.postman_collection.json) se incluye una colección de ejemplo con peticiones básicas de autenticación y consulta de precios.
 
 ### Mensajería Asíncrona
 Se integró RabbitMQ como sistema de colas para propagar eventos de forma desacoplada.
