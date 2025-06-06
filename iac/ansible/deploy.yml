@@ -1,0 +1,14 @@
+---
+- hosts: kube
+  tasks:
+    - name: Desplegar manifiestos de Kubernetes
+      kubernetes.core.k8s:
+        kubeconfig: "{{ kubeconfig }}"
+        state: present
+        src: "{{ item }}"
+      loop:
+        - ../../k8s/discovery-server.yaml
+        - ../../k8s/config-server.yaml
+        - ../../k8s/price-service.yaml
+        - ../../k8s/customer-service.yaml
+        - ../../k8s/gateway-service.yaml

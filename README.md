@@ -88,3 +88,10 @@ Esto desplegará los servicios y expondrá el `gateway-service` como punto de en
 
 ### Integración Serverless (AWS Lambda)
 Para tareas puntuales, como notificaciones, auditorías o trabajos programados, puedes usar funciones Lambda. En la carpeta [`lambda`](lambda/) se incluye un ejemplo sencillo que puede desplegarse con la AWS CLI o mediante el framework Serverless.
+
+### Automatizacion DevOps
+Se incluye un `Jenkinsfile` de ejemplo que compila el proyecto con Maven, ejecuta las pruebas y construye las imagenes Docker de cada servicio. Posteriormente las publica en un registro y despliega en Kubernetes. Ante fallos la tuberia realiza *rollback* sobre el despliegue.
+
+Asimismo, en la carpeta [`iac`](iac/) se proveen ejemplos de infraestructura como codigo:
+- [`terraform`](iac/terraform/) crea recursos de Kubernetes de manera reproducible.
+- [`ansible`](iac/ansible/) aplica los manifiestos y orquesta los despliegues.
