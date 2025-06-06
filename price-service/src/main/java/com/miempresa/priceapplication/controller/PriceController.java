@@ -5,6 +5,7 @@ import com.miempresa.priceapplication.model.PriceEvent;
 import com.miempresa.priceapplication.service.PriceCommandService;
 import com.miempresa.priceapplication.service.PriceQueryService;
 import com.miempresa.priceapplication.service.PriceEventService;
+import com.miempresa.priceapplication.service.PricePredictionService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -23,6 +24,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.math.BigDecimal;
 
 import java.util.List;
 
@@ -37,6 +39,7 @@ public class PriceController {
     private final PriceCommandService commandService;
     private final PriceQueryService queryService;
     private final PriceEventService eventService;
+    private final PricePredictionService predictionService;
 
     @Operation(summary = "Crear un nuevo precio", description = "Crea un precio basado en los detalles proporcionados.")
     @ApiResponses(value = {
@@ -96,6 +99,16 @@ public class PriceController {
     public Mono<ResponseEntity<Price>> updatePrice(@PathVariable @Min(1) Long id,
                                              @Valid @RequestBody Price price) {
         return Mono.fromCallable(() -> commandService.updatePrice(id, price))
+                .map(ResponseEntity::ok);
+    }
+
+    @Operation(summary = "Predecir precio dinámico", description = "Utiliza aprendizaje automático sencillo para sugerir un precio basado en el historial")
+    @GetMapping("/predict")
+    public Mono<ResponseEntity<BigDecimal>> predictPrice(
+            @RequestParam @Min(1) Integer productId,
+            @RequestParam @Min(1) Integer brandId,
+            @RequestParam @NotNull @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime date) {
+        return Mono.fromCallable(() -> predictionService.predictPrice(productId, brandId, date))
                 .map(ResponseEntity::ok);
     }
 
