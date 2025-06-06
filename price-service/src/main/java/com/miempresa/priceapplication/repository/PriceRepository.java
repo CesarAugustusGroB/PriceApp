@@ -38,4 +38,8 @@ public interface PriceRepository extends JpaRepository<Price, Long> {
                                       @Param("startDate") LocalDateTime startDate,
                                       @Param("endDate") LocalDateTime endDate);
 
+    @Query("SELECT p FROM Price p WHERE p.productId = :productId AND p.brandId = :brandId ORDER BY p.startDate ASC")
+    List<Price> findByProductIdAndBrandIdOrderByStartDateAsc(@Param("productId") Integer productId,
+                                                             @Param("brandId") Integer brandId);
+
 }
